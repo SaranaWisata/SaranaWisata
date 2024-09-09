@@ -410,7 +410,7 @@
                 </select>
               </div>
               <div>
-                <input type="text" id="name" placeholder="Your Name" required />
+                <input type="text" id="name" placeholder="Nama" required />
               </div>
               <div>
                 <input type="email" id="email" placeholder="Email" required />
@@ -468,9 +468,14 @@
       var name = document.getElementById('name').value;
       var email = document.getElementById('email').value;
       var message = document.getElementById('message').value;
-  
-      var whatsappURL = `https://wa.me/6282385040007?text=Name: ${encodeURIComponent(name)}%0AEmail: ${encodeURIComponent(email)}%0AMessage: ${encodeURIComponent(message)}`;
-  
+      var adminNumber = document.getElementById('adminNumber').value;
+
+      if (adminNumber === "") {
+        alert("Please select an admin to chat with.");
+        return;
+      }
+
+      var whatsappURL = https://wa.me/${adminNumber}?text=Name: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0AEmail: ${encodeURIComponent(email)}%0AMessage: ${encodeURIComponent(message)};
       window.open(whatsappURL, '_blank');
     }
   </script>
