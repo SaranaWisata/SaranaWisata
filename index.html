@@ -164,7 +164,7 @@
 
     .section-title {
       text-align: center;
-      font-size: 2.5rem;
+      font-size: clamp(2rem, 6vw, 2.5rem);
       margin-bottom: 4rem;
       font-weight: 800;
       letter-spacing: -1px;
@@ -215,11 +215,12 @@
     }
 
     .hero-content h1 {
-      font-size: 4rem;
-      line-height: 1.1;
+      font-size: clamp(2.3rem, 8vw, 4rem);
+      line-height: 1.2;
       margin-bottom: 1.5rem;
       font-weight: 800;
       letter-spacing: -1.5px;
+      word-wrap: break-word;
     }
 
     .hero-content h1 span {
@@ -731,6 +732,15 @@
       border: 1px solid rgba(255,255,255,0.05);
       position: relative;
       z-index: 1;
+      cursor: pointer;
+    }
+
+    .map-click-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      cursor: pointer;
+      background: transparent;
     }
 
     .contact-map iframe {
@@ -738,6 +748,40 @@
       height: 100%;
       border: none;
       filter: invert(90%) hue-rotate(180deg) brightness(85%) contrast(85%);
+    }
+
+    .map-switcher {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 10;
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 0.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .map-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+    
+    .map-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .map-btn:hover:not(.active) {
+      color: white;
     }
 
     /* Footer */
@@ -808,12 +852,33 @@
         padding: 2.5rem;
       }
       
-      .nav-links, .login-btn {
-        display: none; 
+      .login-btn { display: none; }
+      
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 250px;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2.5rem;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        z-index: 999;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
       }
       
+      .nav-links.active {
+        right: 0;
+      }
+
       .mobile-menu-btn {
         display: block;
+        z-index: 1000;
+        position: relative;
       }
       
       .footer-content {
@@ -1110,8 +1175,14 @@
         </form>
       </div>
       
-      <div class="contact-map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.653137182152!2d101.4406642!3d0.5213692999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac040dea3003%3A0x456348a4ca9a8197!2sTravel%20Pekanbaru%20Padang%20Sarana%20Wisata%20Pekanbaru!5e0!3m2!1sen!2sid!4v1725793538405!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="contact-map" id="mapContainer">
+        <div class="map-switcher">
+          <button type="button" class="map-btn active" onclick="switchMap('pekanbaru')">Pekanbaru</button>
+          <button type="button" class="map-btn" onclick="switchMap('padang')">Padang</button>
+        </div>
+        <!-- Overlay transparan agar klik di manapun redirect ke Google Maps -->
+        <div id="mapOverlay" class="map-click-overlay"></div>
+        <iframe id="mapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.653137182152!2d101.4406642!3d0.5213692999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac040dea3003%3A0x456348a4ca9a8197!2sTravel%20Pekanbaru%20Padang%20Sarana%20Wisata%20Pekanbaru!5e0!3m2!1sen!2sid!4v1725793538405!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </section>
@@ -1136,6 +1207,50 @@
   <script>
     // Update Year
     document.getElementById("displayYear").textContent = new Date().getFullYear();
+
+    // Mobile Menu Logic
+    const mobileBtn = document.querySelector('.mobile-menu-btn');
+    const navLinksContainer = document.querySelector('.nav-links');
+    const navItems = document.querySelectorAll('.nav-links a');
+    
+    mobileBtn.addEventListener('click', () => {
+      navLinksContainer.classList.toggle('active');
+    });
+    
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navLinksContainer.classList.remove('active');
+      });
+    });
+
+    // Map Switcher Logic
+    let currentMapLocation = 'pekanbaru';
+    const mapLinks = {
+      pekanbaru: "https://www.google.com/maps/place/Travel+Pekanbaru+Padang+Sarana+Wisata+Pekanbaru/@0.5215846,101.4410218,19.5z/data=!4m6!3m5!1s0x31d5ac040dea3003:0x456348a4ca9a8197!8m2!3d0.5213693!4d101.4406642!16s%2Fg%2F11g9nlrx6b",
+      padang:    "https://www.google.com/maps/place/PT.Fahkri+Sarana+Wisata/@-0.9229256,100.3793603,17z/data=!4m6!3m5!1s0x2fd4b900663c9a2f:0xbda5175fee257c4e!8m2!3d-0.9229256!4d100.3793603!16s%2Fg%2F11y3md580v"
+    };
+
+    // Klik di mana saja pada container peta = buka Google Maps
+    document.getElementById('mapContainer').addEventListener('click', function(e) {
+      // Jangan redirect kalau yang diklik adalah tombol switcher
+      if (e.target.closest('.map-switcher')) return;
+      window.open(mapLinks[currentMapLocation], '_blank', 'noopener');
+    });
+
+    function switchMap(location) {
+      currentMapLocation = location;
+      const iframe = document.getElementById('mapIframe');
+      const btns = document.querySelectorAll('.map-btn');
+      btns.forEach(btn => btn.classList.remove('active'));
+      
+      if(location === 'pekanbaru') {
+        iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d300!2d101.4410218!3d0.5215846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac040dea3003%3A0x456348a4ca9a8197!2sTravel%20Pekanbaru%20Padang%20Sarana%20Wisata%20Pekanbaru!5e0!3m2!1sen!2sid!4v1725793538405!5m2!1sen!2sid";
+        btns[0].classList.add('active');
+      } else {
+        iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d997.6!2d100.3793603!3d-0.9229256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b900663c9a2f%3A0xbda5175fee257c4e!2sPT.Fahkri%20Sarana%20Wisata!5e0!3m2!1sen!2sid!4v1720000000000!5m2!1sen!2sid";
+        btns[1].classList.add('active');
+      }
+    }
 
     // WhatsApp logic
     function sendMessage(event) {
