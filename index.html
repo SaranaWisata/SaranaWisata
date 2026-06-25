@@ -640,6 +640,17 @@
       font-size: 1.1rem;
     }
 
+    .rating-icons {
+      display: flex;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+
+    .rating-icons i {
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
     /* Contact Section */
     .contact-wrapper {
       display: flex;
@@ -725,7 +736,7 @@
     }
 
     .contact-map {
-      flex: 1.2;
+      flex-grow: 1;
       border-radius: 20px;
       overflow: hidden;
       min-height: 400px;
@@ -750,18 +761,22 @@
       filter: invert(90%) hue-rotate(180deg) brightness(85%) contrast(85%);
     }
 
+    .map-section-wrapper {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+    }
+
     .map-switcher {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      z-index: 10;
       display: flex;
       gap: 0.5rem;
+      margin-bottom: 0.75rem;
       background: rgba(15, 23, 42, 0.85);
       padding: 0.5rem;
       border-radius: 12px;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.1);
+      width: fit-content;
     }
     
     .map-btn {
@@ -849,7 +864,22 @@
       }
       
       .contact-wrapper {
-        padding: 2.5rem;
+        padding: 1.5rem;
+        gap: 2rem;
+      }
+
+      .contact-map {
+        min-height: 350px;
+        height: 350px;
+        border-radius: 16px;
+        width: 100%;
+      }
+      
+      .contact-map iframe {
+        /* Hapus filter gelap di mobile agar lebih terbaca */
+        filter: none;
+        width: 100%;
+        height: 100%;
       }
       
       .login-btn { display: none; }
@@ -1112,7 +1142,7 @@
           <div class="client-avatar">S</div>
           <div>
             <h5>Siaalya</h5>
-            <span style="color: var(--accent); font-size: 0.8rem;"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></span>
+            <div class="rating-icons"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></div>
           </div>
         </div>
       </div>
@@ -1124,7 +1154,7 @@
           <div class="client-avatar">A</div>
           <div>
             <h5>Agnes</h5>
-            <span style="color: var(--accent); font-size: 0.8rem;"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></span>
+            <div class="rating-icons"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></div>
           </div>
         </div>
       </div>
@@ -1136,7 +1166,7 @@
           <div class="client-avatar">Sr</div>
           <div>
             <h5>Sri</h5>
-            <span style="color: var(--accent); font-size: 0.8rem;"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></span>
+            <div class="rating-icons"><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i><i class="fa-solid fa-thumbs-up"></i></div>
           </div>
         </div>
       </div>
@@ -1175,14 +1205,16 @@
         </form>
       </div>
       
-      <div class="contact-map" id="mapContainer">
+      <div class="map-section-wrapper">
         <div class="map-switcher">
           <button type="button" class="map-btn active" onclick="switchMap('pekanbaru')">Pekanbaru</button>
           <button type="button" class="map-btn" onclick="switchMap('padang')">Padang</button>
         </div>
-        <!-- Overlay transparan agar klik di manapun redirect ke Google Maps -->
-        <div id="mapOverlay" class="map-click-overlay"></div>
-        <iframe id="mapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.653137182152!2d101.4406642!3d0.5213692999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac040dea3003%3A0x456348a4ca9a8197!2sTravel%20Pekanbaru%20Padang%20Sarana%20Wisata%20Pekanbaru!5e0!3m2!1sen!2sid!4v1725793538405!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="contact-map" id="mapContainer">
+          <!-- Overlay transparan agar klik di manapun redirect ke Google Maps -->
+          <div id="mapOverlay" class="map-click-overlay"></div>
+          <iframe id="mapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d300!2d101.4410218!3d0.5215846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac040dea3003%3A0x456348a4ca9a8197!2sTravel%20Pekanbaru%20Padang%20Sarana%20Wisata%20Pekanbaru!5e0!3m2!1sen!2sid!4v1725793538405!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
     </div>
   </section>
